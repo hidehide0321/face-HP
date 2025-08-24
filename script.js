@@ -1,29 +1,29 @@
-console.log("script.js loaded");
+let slideIndex = 0;
+showSlides();
 
-document.addEventListener('DOMContentLoaded', function () {
-    const faqQuestions = document.querySelectorAll('.faq-question');
+function showSlides() {
+  let i;
+  let slides = document.getElementsByClassName("mySlides");
+  for (i = 0; i < slides.length; i++) {
+    slides[i].style.display = "none";
+  }
+  slideIndex++;
+  if (slideIndex > slides.length) {slideIndex = 1}
+  slides[slideIndex-1].style.display = "block";
+  setTimeout(showSlides, 3000); // Change image every 3 seconds
+}
 
-    faqQuestions.forEach(question => {
-        question.addEventListener('click', () => {
-            const answer = question.nextElementSibling;
-            const isActive = question.classList.contains('active');
+// FAQ Accordion
+const faqQuestions = document.querySelectorAll('.faq-question');
 
-            // Close all other answers
-            faqQuestions.forEach(q => {
-                if (q !== question) {
-                    q.classList.remove('active');
-                    q.nextElementSibling.style.maxHeight = null;
-                }
-            });
-
-            // Open or close the clicked answer
-            if (isActive) {
-                question.classList.remove('active');
-                answer.style.maxHeight = null;
-            } else {
-                question.classList.add('active');
-                answer.style.maxHeight = answer.scrollHeight + 'px';
-            }
-        });
+faqQuestions.forEach(question => {
+    question.addEventListener('click', () => {
+        question.classList.toggle('active');
+        const answer = question.nextElementSibling;
+        if (answer.style.maxHeight) {
+            answer.style.maxHeight = null;
+        } else {
+            answer.style.maxHeight = answer.scrollHeight + 'px';
+        }
     });
 });
