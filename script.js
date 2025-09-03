@@ -1,29 +1,44 @@
-let slideIndex = 0;
-showSlides();
+document.addEventListener('DOMContentLoaded', function() {
 
-function showSlides() {
-  let i;
-  let slides = document.getElementsByClassName("mySlides");
-  for (i = 0; i < slides.length; i++) {
-    slides[i].style.display = "none";
-  }
-  slideIndex++;
-  if (slideIndex > slides.length) {slideIndex = 1}
-  slides[slideIndex-1].style.display = "block";
-  setTimeout(showSlides, 3000); // Change image every 3 seconds
-}
+    // --- Staggered Fade-in on Scroll ---
+    const animatedElements = document.querySelectorAll('[data-animate]');
 
-// FAQ Accordion
-const faqQuestions = document.querySelectorAll('.faq-question');
+    if (animatedElements.length > 0) {
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target); // Animate only once
+                }
+            });
+        }, {
+            threshold: 0.15 // Trigger when 15% of the element is visible
+        });
 
-faqQuestions.forEach(question => {
-    question.addEventListener('click', () => {
-        question.classList.toggle('active');
-        const answer = question.nextElementSibling;
-        if (answer.style.maxHeight) {
-            answer.style.maxHeight = null;
+        animatedElements.forEach(el => {
+            observer.observe(el);
+        });
+    }
+
+    // --- Scroll to Top Button ---
+    const scrollToTopButton = document.createElement('button');
+    scrollToTopButton.id = 'scroll-to-top';
+    scrollToTopButton.innerHTML = '&uarr;'; // Use innerHTML for arrow entity
+    document.body.appendChild(scrollToTopButton);
+
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 400) { // Show after scrolling a bit more
+            scrollToTopButton.style.display = 'block';
         } else {
-            answer.style.maxHeight = answer.scrollHeight + 'px';
+            scrollToTopButton.style.display = 'none';
         }
     });
+
+    scrollToTopButton.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
 });
